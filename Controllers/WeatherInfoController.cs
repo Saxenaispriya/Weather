@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileSystemGlobbing;
 using WeatherInfoApi.Models;
+using System.Net.Http;
+using System.Text.Json;
+
 
 namespace WeatherInfoApi.Controllers
 {
@@ -19,25 +22,25 @@ namespace WeatherInfoApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult Weatherinfo(string name1)
+        public async Task<IActionResult> WeatherinfoAsync(double lon,double lat)
         {
-            string name;
-            foreach(var weather in weatherList)
-            {
-                name = weather.Name;
-                if(name1 == name)
-                {
-                    return Ok(weather.degree);   
-                }
-                else if (name1 == weather.Name)
-                {
-                    return Ok(weather.degree);
-                }
-                
 
-            }
+            var apikey = "d0019d247e30fabc42dc43cab0e5fb31";
+            var endpoint = "https://api.openweathermap.org/data/2.5/weather";
+            var url =string.Format("{0}?lat={1}&lon={2}&appid={3}",endpoint,lat,lon,apikey);
 
-            return Ok(20);
+
+            var client = new HttpClient();
+
+            var request = new HttpRequestMessage(HttpMethod.Get, url);
+
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode(); // Throw an exception if error
+
+            var body = await response.Content.ReadAsStringAsync();
+            //Console.WriteLine(body);
+
+            return Ok(body);
         }
 
        
