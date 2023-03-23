@@ -4,7 +4,8 @@ using Microsoft.Extensions.FileSystemGlobbing;
 using WeatherInfoApi.Models;
 using System.Net.Http;
 using System.Text.Json;
-
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace WeatherInfoApi.Controllers
 {
@@ -12,13 +13,13 @@ namespace WeatherInfoApi.Controllers
     [ApiController]
     public class WeatherInfoController : ControllerBase
     {
-       List<Weather> weatherList;
+       List<PWeather> weatherList;
 
         public WeatherInfoController()
         {
-            weatherList = new List<Weather>();
-            weatherList.Add(new Weather { Name="India",degree=40});
-            weatherList.Add(new Weather { Name = "Canada", degree = 10 });
+            weatherList = new List<PWeather>();
+            weatherList.Add(new PWeather { Name="India",degree=40});
+            weatherList.Add(new PWeather { Name = "Canada", degree = 10 });
         }
 
         [HttpGet]
@@ -38,8 +39,13 @@ namespace WeatherInfoApi.Controllers
             response.EnsureSuccessStatusCode(); // Throw an exception if error
 
             var body = await response.Content.ReadAsStringAsync();
-            //Console.WriteLine(body);
+            //dynamic json = JsonConvert.DeserializeObject();
+            // Console.WriteLine(body);
 
+            //JObject json = JObject.Parse(body);
+             Root roooot = JsonConvert.DeserializeObject<Root>(body);
+
+            Console.WriteLine(roooot.main.temp);
             return Ok(body);
         }
 
