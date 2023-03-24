@@ -6,6 +6,8 @@ using System.Net.Http;
 using System.Text.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Net.Http.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace WeatherInfoApi.Controllers
 {
@@ -39,14 +41,16 @@ namespace WeatherInfoApi.Controllers
             response.EnsureSuccessStatusCode(); // Throw an exception if error
 
             var body = await response.Content.ReadAsStringAsync();
-            //dynamic json = JsonConvert.DeserializeObject();
-            // Console.WriteLine(body);
+            Console.WriteLine(body);
+            var result = JsonSerializer.Deserialize<Root>(body,
+            new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+
 
             //JObject json = JObject.Parse(body);
-             Root roooot = JsonConvert.DeserializeObject<Root>(body);
+            // Root roooot = JsonConvert.DeserializeObject<Root>(body);
 
-            Console.WriteLine(roooot.main.temp);
-            return Ok(body);
+             
+            return Ok(result);
         }
 
        
