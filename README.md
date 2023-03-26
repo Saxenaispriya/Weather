@@ -1,2 +1,2 @@
 # Weather
-i made a weather
+i made a weather api to consume weather data
